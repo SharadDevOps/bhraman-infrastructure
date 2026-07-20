@@ -1,4 +1,7 @@
-#data "azurerm_client_config" "current" {}
+data "azurerm_container_registry" "acr" {
+  name                = "acrbhrretcin"
+  resource_group_name = "rg-bhr-acr-cin"
+}
 
 module "resource_group" {
   source              = "../../../modules/resource-group"
@@ -35,14 +38,14 @@ module "app_service" {
   resource_group_name = module.resource_group.name
   location            = var.location
   sku_name            = var.app_service_sku_name
+  docker_image_name   = "bhraman-retreats:latest"
+  docker_registry_url = "https://${data.azurerm_container_registry.acr.login_server}"
 
   app_settings = {
-    DATABASE_URL                        = "postgresql://${var.db_admin_login}:${var.db_admin_password}@${module.postgres.fqdn}:5432/${module.postgres.database_name}?sslmode=require"
-    ADMIN_PASSWORD                      = var.site_admin_password
-    AZURE_STORAGE_ACCOUNT_NAME          = module.storage_account.name
-    AZURE_STORAGE_CONTAINER_NAME        = module.storage_account.container_name
-    SCM_DO_BUILD_DURING_DEPLOYMENT      = "false"
-    WEBSITES_ENABLE_APP_SERVICE_STORAGE = "true"
+    DATABASE_URL                 = "postgresql://${var.db_admin_login}:${var.db_admin_password}@${module.postgres.fqdn}:5432/${module.postgres.database_name}?sslmode=require"
+    ADMIN_PASSWORD               = var.site_admin_password
+    AZURE_STORAGE_ACCOUNT_NAME   = module.storage_account.name
+    AZURE_STORAGE_CONTAINER_NAME = module.storage_account.container_name
   }
 
   tags = local.tags
@@ -51,5 +54,11 @@ module "app_service" {
 resource "azurerm_role_assignment" "app_blob_contributor" {
   scope                = module.storage_account.id
   role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = module.app_service.principal_id
+}
+
+resource "azurerm_role_assignment" "app_acr_pull" {
+  scope                = data.azurerm_container_registry.acr.id
+  role_definition_name = "AcrPull"
   principal_id         = module.app_service.principal_id
 }
