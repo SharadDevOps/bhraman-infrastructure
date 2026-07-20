@@ -13,7 +13,6 @@ terraform {
     storage_account_name = "bhrtfstatecin"
     container_name       = "tfstate"
     key                  = "retreats/dev.terraform.tfstate"
-    use_oidc             = true
     use_azuread_auth     = true
   }
 }
