@@ -31,9 +31,9 @@ variable "node_version" {
 }
 
 variable "app_command_line" {
-  description = "Startup command for the app."
+  description = "Startup command for the app. HOSTNAME=0.0.0.0 makes the Next.js standalone server bind to all interfaces so App Service can reach it."
   type        = string
-  default     = "node server.js"
+  default     = "HOSTNAME=0.0.0.0 node server.js"
 }
 
 variable "always_on" {

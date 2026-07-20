@@ -46,13 +46,17 @@ if ($UseImmutableIds) {
   Write-Host "Using name subjects: $repoPrefix"
 }
 
+# Credential names are prefixed with the repo so multiple repos can share one
+# app registration without overwriting each other's credentials.
+$np = "gh-$Repo"
+
 # trigger name -> subject suffix
 $creds = [ordered]@{
-  "gh-pull-request" = "${repoPrefix}:pull_request"
-  "gh-main"         = "${repoPrefix}:ref:refs/heads/main"
+  "$np-pull-request" = "${repoPrefix}:pull_request"
+  "$np-main"         = "${repoPrefix}:ref:refs/heads/main"
 }
 foreach ($env in $Environments) {
-  $creds["gh-env-$env"] = "${repoPrefix}:environment:$env"
+  $creds["$np-env-$env"] = "${repoPrefix}:environment:$env"
 }
 
 # Existing credential names on the app
