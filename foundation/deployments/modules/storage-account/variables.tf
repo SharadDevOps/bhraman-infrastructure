@@ -25,6 +25,12 @@ variable "account_replication_type" {
   default     = "LRS"
 }
 
+variable "allow_public_blobs" {
+  description = "Allow anonymous read of blobs in the media container so uploaded image URLs are publicly viewable on the website."
+  type        = bool
+  default     = true
+}
+
 variable "tags" {
   description = "Tags applied to the storage account."
   type        = map(string)

@@ -47,3 +47,9 @@ module "app_service" {
 
   tags = local.tags
 }
+
+resource "azurerm_role_assignment" "app_blob_contributor" {
+  scope                = module.storage_account.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = module.app_service.principal_id
+}
