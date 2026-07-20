@@ -1,0 +1,43 @@
+name: Terraform Plan
+
+on:
+  pull_request:
+    paths:
+      - "foundation/**"
+      - ".github/workflows/terraform-plan.yml"
+  workflow_dispatch:
+    inputs:
+      project:
+        description: "Project directory name (retreats)"
+        required: true
+        default: "retreats"
+        type: string
+      environment:
+        description: "Environment directory name (dev or prod)"
+        required: true
+        default: "dev"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    env:
+      TF_IN_AUTOMATION: "true"
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      TF_VAR_db_admin_password: ${{ secrets.TF_VAR_DB_ADMIN_PASSWORD }}
+      TF_VAR_site_admin_password: ${{ secrets.TF_VAR_SITE_ADMIN_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - name: Terraform init, validate, and plan
+        working-directory: foundation/deployments/projects/${{ inputs.project || 'retreats' }}/${{ inputs.environment || 'dev' }}
+        run: |
+          terraform init -input=false
+          terraform validate
+          terraform plan -input=false
