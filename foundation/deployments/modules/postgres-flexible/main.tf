@@ -9,6 +9,12 @@ resource "azurerm_postgresql_flexible_server" "this" {
   storage_mb             = var.storage_mb
   backup_retention_days  = var.backup_retention_days
   tags                   = var.tags
+
+  # Azure auto-assigns an availability zone at creation; it cannot be changed
+  # afterwards, so ignore drift to avoid a rejected in-place update.
+  lifecycle {
+    ignore_changes = [zone]
+  }
 }
 
 resource "azurerm_postgresql_flexible_server_database" "this" {
