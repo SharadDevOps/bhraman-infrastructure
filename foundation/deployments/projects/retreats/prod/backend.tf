@@ -12,7 +12,9 @@ terraform {
     resource_group_name  = "bhr-tfstate-cin-rg"
     storage_account_name = "bhrtfstatecin"
     container_name       = "tfstate"
-    key                  = "retreats/prod.tfstate"
+    key                  = "retreats/prod.terraform.tfstate"
+    use_oidc             = true
+    use_azuread_auth     = true
   }
 }
 
