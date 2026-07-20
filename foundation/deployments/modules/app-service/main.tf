@@ -15,8 +15,11 @@ resource "azurerm_linux_web_app" "this" {
   https_only          = true
 
   site_config {
-    always_on        = var.always_on
-    app_command_line = var.app_command_line
+    always_on           = var.always_on
+    app_command_line    = var.app_command_line
+    http2_enabled       = true
+    minimum_tls_version = "1.2"
+    ftps_state          = "Disabled"
 
     application_stack {
       node_version = var.node_version

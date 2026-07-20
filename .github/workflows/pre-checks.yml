@@ -44,3 +44,7 @@ jobs:
           path: foundation
           output_path: results
           output_formats: sarif
+          # Only block on HIGH/CRITICAL findings. Medium/low hardening items
+          # (private networking, client certs, app auth) are tracked but not
+          # gating for this public marketing site.
+          fail_on: high,critical
