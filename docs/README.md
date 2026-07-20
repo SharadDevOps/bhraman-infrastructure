@@ -4,10 +4,10 @@
 
 Each environment (dev, prod) provisions in Central India:
 
-- Resource group `bhr-ret-<env>-cin-rg`
-- Linux App Service plan + web app `bhr-ret-<env>-cin-app` (Node 20, HTTPS-only, system-assigned identity) running the Next.js site
-- PostgreSQL Flexible Server `bhr-ret-<env>-cin-psql` (v16) with database `bhraman`
-- Storage account `bhrret<env>cinst` with private container `retreat-media`
+- Resource group `rg-bhr-ret-<env>-cin`
+- Linux App Service plan + web app `app-bhr-ret-<env>-cin` (Node 20, HTTPS-only, system-assigned identity) running the Next.js site
+- PostgreSQL Flexible Server `psql-bhr-ret-<env>-cin` (v16) with database `bhraman`
+- Storage account `stbhrret<env>cin` with private container `retreat-media`
 
 Terraform state lives in Azure Storage (`bhr-tfstate-cin-rg` / `bhrtfstatecin` / `tfstate`), bootstrapped once via `scripts/bootstrap-state.sh`.
 
@@ -15,7 +15,12 @@ Terraform state lives in Azure Storage (`bhr-tfstate-cin-rg` / `bhrtfstatecin` /
 
 Values are never stored in this repository.
 
-- `ARM_CLIENT_ID`, `ARM_CLIENT_SECRET`, `ARM_SUBSCRIPTION_ID`, `ARM_TENANT_ID` — service principal with Contributor on the subscription
+- `ARM_CLIENT_ID`, `ARM_SUBSCRIPTION_ID`, `ARM_TENANT_ID` — Entra app registration with Contributor on the subscription.
+  Authentication uses OIDC federated credentials (no client secret). The app registration
+  needs federated credentials whose subjects cover every context the workflows run in:
+  `repo:SharadDevOps/bhraman-infrastructure:pull_request`,
+  `repo:SharadDevOps/bhraman-infrastructure:ref:refs/heads/main`,
+  and `repo:SharadDevOps/bhraman-infrastructure:environment:<dev|prod|destroy>`.
 - `TF_VAR_DB_ADMIN_PASSWORD` — PostgreSQL admin password
 - `TF_VAR_SITE_ADMIN_PASSWORD` — website /admin password
 

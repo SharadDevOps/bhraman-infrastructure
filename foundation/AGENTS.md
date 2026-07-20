@@ -16,12 +16,13 @@ Rules for AI-assisted and human edits to this repository. Preserve these convent
 
 ## Naming and tags
 
-- Resource group: `<brand_short>-<project_short>-<environment_short>-<location_short>-rg` (e.g. `bhr-ret-dev-cin-rg`).
-- Other resources share the `<brand_short>-<project_short>-<environment_short>-<location_short>` prefix.
+- Resource names use a type prefix followed by `<brand_short>-<project_short>-<environment_short>-<location_short>`:
+  resource group `rg-bhr-ret-dev-cin`, App Service plan `asp-...`, web app `app-...`, PostgreSQL `psql-...`, storage `stbhrretdevcin` (no hyphens).
 - Tags on every resource: `Brand`, `Environment`, `Project`, `ManagedBy`.
 
 ## Secrets
 
+- Authentication uses OIDC federated credentials (`ARM_USE_OIDC`); no client secret exists.
 - Never write passwords, client secrets, access keys, or tokens to any file.
 - Secret variables (`db_admin_password`, `site_admin_password`) are supplied via `TF_VAR_*` environment variables from GitHub Actions secrets.
 - `terraform.tfvars` may contain non-secret values only.

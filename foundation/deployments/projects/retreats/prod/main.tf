@@ -1,4 +1,4 @@
-data "azurerm_client_config" "current" {}
+#data "azurerm_client_config" "current" {}
 
 module "resource_group" {
   source              = "../../../modules/resource-group"
@@ -18,7 +18,7 @@ module "storage_account" {
 
 module "postgres" {
   source              = "../../../modules/postgres-flexible"
-  server_name         = "${local.name_prefix}-psql"
+  server_name         = "psql-${local.name_suffix}"
   resource_group_name = module.resource_group.name
   location            = var.location
   database_name       = "bhraman"
@@ -30,8 +30,8 @@ module "postgres" {
 
 module "app_service" {
   source              = "../../../modules/app-service"
-  service_plan_name   = "${local.name_prefix}-asp"
-  web_app_name        = "${local.name_prefix}-app"
+  service_plan_name   = "asp-${local.name_suffix}"
+  web_app_name        = "app-${local.name_suffix}"
   resource_group_name = module.resource_group.name
   location            = var.location
   sku_name            = var.app_service_sku_name
