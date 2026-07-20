@@ -15,18 +15,22 @@ resource "azurerm_linux_web_app" "this" {
   https_only          = true
 
   site_config {
-    always_on           = var.always_on
-    app_command_line    = var.app_command_line
-    http2_enabled       = true
-    minimum_tls_version = "1.2"
-    ftps_state          = "Disabled"
+    always_on                               = var.always_on
+    http2_enabled                           = true
+    minimum_tls_version                     = "1.2"
+    ftps_state                              = "Disabled"
+    container_registry_use_managed_identity = true
 
     application_stack {
-      node_version = var.node_version
+      docker_image_name   = var.docker_image_name
+      docker_registry_url = var.docker_registry_url
     }
   }
 
-  app_settings = var.app_settings
+  app_settings = merge(var.app_settings, {
+    WEBSITES_PORT                       = "8080"
+    WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
+  })
 
   identity {
     type = "SystemAssigned"

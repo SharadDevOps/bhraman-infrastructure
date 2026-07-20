@@ -24,16 +24,14 @@ variable "sku_name" {
   default     = "B1"
 }
 
-variable "node_version" {
-  description = "Node.js runtime version for the application stack."
+variable "docker_image_name" {
+  description = "Container image and tag, e.g. bhraman-retreats:latest."
   type        = string
-  default     = "20-lts"
 }
 
-variable "app_command_line" {
-  description = "Startup command for the app. HOSTNAME=0.0.0.0 makes the Next.js standalone server bind to all interfaces so App Service can reach it."
+variable "docker_registry_url" {
+  description = "Registry URL, e.g. https://acrbhrretcin.azurecr.io. Pull uses the app's managed identity."
   type        = string
-  default     = "HOSTNAME=0.0.0.0 node server.js"
 }
 
 variable "always_on" {
